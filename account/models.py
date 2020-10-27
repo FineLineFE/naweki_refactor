@@ -1,4 +1,5 @@
-from django.db import models
+from django.db      import models
+from product.models import Product
 
 class Account(models.Model):
     
@@ -12,3 +13,10 @@ class Account(models.Model):
     
     class Meta:
         db_table = "accounts"
+    
+class WishList(models.Model):
+    product = models.ForeignKey('product.Product', on_delete = models.CASCADE)
+    account = models.ForeignKey('account', on_delete = models.CASCADE)
+    
+    class Meta:
+        db_table = "wishlists"
