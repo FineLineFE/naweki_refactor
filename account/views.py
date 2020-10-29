@@ -49,3 +49,4 @@ class SignInView(View):
 
         except KeyError:
             return JsonResponse({"message" : "INVALID_KEYS"} , status = 400)         
+from django.shortcuts import render
