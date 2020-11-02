@@ -75,4 +75,3 @@ class SubImageUrl(models.Model):
 
     class Meta:
         db_table = "sub_image_urls"
-        
