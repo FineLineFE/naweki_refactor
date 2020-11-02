@@ -30,9 +30,9 @@ class ProductView(View):
                 "typeId"     : selected_product.type.id,
                 "title"      : selected_product.description_title,
                 "color"      : [color.color_id for color in selected_product.productcolor_set.all()],
-                "size"       : [size.size_id for size in selected_product.productsize_set.all()],
+                "size"       : [size.size_id for size in selected_product.productsize_set.all()], 
             }
-            return JsonResponse({"message" : [data]}, status = 200)
+            return JsonResponse({"message" : data}, status = 200)
         
         except Product.DoesNotExist:
             return JsonResponse({"message" : "NOT_EXIST"}, status = 400)
