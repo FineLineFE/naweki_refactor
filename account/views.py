@@ -5,7 +5,7 @@ import jwt
 import requests
 from django.views             import View
 from django.http              import JsonResponse
-from .models                  import Account
+from account.models           import Account
 from naweki_refactor.settings import SECRET_KEY, ALGORITHM
 
 class SignUpView(View):
@@ -44,10 +44,6 @@ class SignInView(View):
                     token = jwt.encode({'id' : account.id} , SECRET_KEY, algorithm = ALGORITHM).decode('utf-8')
                     return JsonResponse({"Authorization" : token}, status = 200 )             
                 return JsonResponse({"message" : "INVALID_INPUT" } , status = 401) 
-            
-            return JsonResponse({"message" : "INVALID_INPUT"} , status = 401)
 
         except KeyError:
-            return JsonResponse({"message" : "INVALID_KEYS"} , status = 400)         
-
-
+            return JsonResponse({"message" : "INVALID_KEYS"} , status = 400)       
