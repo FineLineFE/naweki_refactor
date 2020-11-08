@@ -43,9 +43,7 @@ class SignInView(View):
                 if bcrypt.checkpw(data['password'].encode('utf-8'), account.password.encode('utf-8')) :
                     token = jwt.encode({'id' : account.id} , SECRET_KEY, algorithm = ALGORITHM).decode('utf-8')
                     return JsonResponse({"Authorization" : token}, status = 200 )             
-                return JsonResponse({"message" : "WORNG_PASSWORD" } , status = 401)
-            
-            return JsonResponse({"message" : "WORNG_EMAIL"} , status = 401)
+                return JsonResponse({"message" : "INVALID_INPUT" } , status = 401) 
 
         except KeyError:
-            return JsonResponse({"message" : "INVALID_KEYS"} , status = 400)         
+            return JsonResponse({"message" : "INVALID_KEYS"} , status = 400)       
