@@ -34,6 +34,8 @@ class ProductView(View):
                 "sizeId"     : selected_sizes[0].size.id,
                 "sizeName"   : selected_sizes[0].size.name,
                 "title"      : selected_product.description_title,
+                "color"      : [color.color_id for color in selected_product.productcolor_set.all()],
+                "size"       : [size.size_id for size in selected_product.productsize_set.all()], 
                 "typeId"     : selected_product.type.id
             }
             return JsonResponse({"message" : data}, status = 200)
