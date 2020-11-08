@@ -5,7 +5,7 @@ import jwt
 import requests
 from django.views             import View
 from django.http              import JsonResponse
-from account.models           import Account
+from account.models           import Account, WishList
 from naweki_refactor.settings import SECRET_KEY, ALGORITHM
 from utils                    import login_decorator
 
@@ -54,15 +54,15 @@ class WishListView(View):
     def post(self, request):
         data = json.loads(request.body)
         try:
-            if not WishList.objects.filter(product_id = data['product_id'], account_id = request.account).exists():
+            if WishList.objects.filter(product_id = data['product_id'], account_id = request.account).exists():
                 return JsonResponse({"message" : "INVALID_REQUEST"}, status = 400)
             
             else:
                 WishList.objects.create(
                     product_id = data['product_id'],
-                    account_id = request.account_id
+                    account_id = request.account
                 )
-                return JsonResponse({"message" : "ADD SUCCESS"}, status = 200)
+                return JsonResponse({"message" : "ADD_SUCCESS"}, status = 200)
             
         except KeyError:
             return JsonResponse({"message" : "INVALID_KEYS"}, status = 400)
@@ -77,6 +77,7 @@ class WishListView(View):
             "productName"  : data.product.name,
             "productPrice" : int(data.product.price)
         } for data in wish]
+        return JsonResponse({"wish_data" : wish_data}, status = 200)
         
     @login_decorator
     def delete(self,request):
@@ -84,9 +85,9 @@ class WishListView(View):
         try:
             if WishList.objects.filter(id = data['wishlist_id']).exists():
                 WishList.objects.filter(id = data['wishlist_id']).delete()
-                return JsonResponse({"message" : "DELETE_SUCCESS"}. status = 200)
+                return JsonResponse({"message" : "DELETE_SUCCESS"}, status = 200)
             
-        except Wishlist.DoesNotExist:
+        except WishList.DoesNotExist:
             return JsonResponse({"message" : "NOT_EXIST_WISHLIST"}, stsua = 404)
           
         except KeyError:
