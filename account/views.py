@@ -45,9 +45,7 @@ class SignInView(View):
                     token = jwt.encode({'id' : account.id} , SECRET_KEY, algorithm = ALGORITHM).decode('utf-8')
                     return JsonResponse({"Authorization" : token}, status = 200 )             
                 return JsonResponse({"message" : "INVALID_INPUT" } , status = 401) 
-            
-            return JsonResponse({"messsage" : "INVALID_INPUT"} , status = 401)
-
+        
         except KeyError:
             return JsonResponse({"message" : "INVALID_KEYS"} , status = 400)   
   
