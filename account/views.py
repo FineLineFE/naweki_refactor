@@ -5,7 +5,7 @@ import jwt
 import requests
 from django.views             import View
 from django.http              import JsonResponse
-from .models                  import Account
+from account.models           import Account
 from naweki_refactor.settings import SECRET_KEY, ALGORITHM
 from utils                    import login_decorator
 
@@ -44,9 +44,7 @@ class SignInView(View):
                 if bcrypt.checkpw(data['password'].encode('utf-8'), account.password.encode('utf-8')) :
                     token = jwt.encode({'id' : account.id} , SECRET_KEY, algorithm = ALGORITHM).decode('utf-8')
                     return JsonResponse({"Authorization" : token}, status = 200 )             
-                return JsonResponse({"message" : "INVALID_INPUT" } , status = 401) 
-            
-            return JsonResponse({"messsage" : "INVALID_INPUT"} , status = 401)
+                return JsonResponse({"message" : "INVALID_INPUT" } , status = 401)
 
         except KeyError:
             return JsonResponse({"message" : "INVALID_KEYS"} , status = 400)   
@@ -90,3 +88,6 @@ class WishListView(View):
             
         except Wishlist.DoesNotExist:
             return JsonResponse({"message" : "NOT_EXIST_WISHLIST"}, stsua = 404)
+          
+        except KeyError:
+            return JsonResponse({"message" : "INVALID_KEYS"} , status = 400)      
