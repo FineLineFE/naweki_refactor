@@ -20,7 +20,7 @@ class SignUpView(View):
                 return JsonResponse({"message" : "INVALID_PASSWORD"}, status = 400) 
             
             if re.match('^\d{3}-\d{4}-\d{4}$', data['phone_number']):
-                return JsonResponse({"message" : "INVALUD_PHONE_NUMBER"}, status = 400)             
+                return JsonResponse({"message" : "INVALID_PHONE_NUMBER"}, status = 400)             
             
             hashed_password = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt())
             Account.objects.create(
