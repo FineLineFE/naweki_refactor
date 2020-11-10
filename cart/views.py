@@ -20,7 +20,7 @@ class CartView(View):
                     count      = data['count'],
                     account_id = request.account,
                     product_id = data['product_id'],               
-                    size_id    = data['size_id']
+                    size_id    = data['size_id'] 
                 )
                 return JsonResponse({"message" : "CREATE_SUCCESS"} , status = 200)
         
@@ -58,9 +58,6 @@ class CartView(View):
         
         except KeyError:
             return JsonResponse({"message" : "INVALID_KEYS"}, status = 400)
-        
-        except Cart.DoesNotExist:
-            return JsonResponse({"message" : "NOT_EXIST_CART"}, status = 404)
                           
     @login_decorator
     def delete(self,request):
