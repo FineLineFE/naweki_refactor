@@ -89,24 +89,15 @@ class SignInTest(TestCase):
         response = client.post('/account/signin', json.dumps(account), content_type = 'application/json')
         
         self.assertEqual(response.status_code, 200)
+        # self.assertEqual(list(response.json().keys()),['Authorization'])
         self.assertEqual(response.json().keys(), {'Authorization'})
         
-    def test_signin_fail_invalid_input(self):
-        account = {
-            'email'    : 'user1@naver.com',
-            'password' : '1q2w3e4r5t@@'
-        }
-        response = client.post('/account/signin', json.dumps(account), content_type = 'application/json')
+    # def test_signin_fail(self):
+    #     account = {
+    #         'email'    : 'usesssssr1@naver.com',
+    #         'password' : '1q2w3e4r5t@'
+    #     }
+    #     response = client.post('/account/signin', json.dumps(account), content_type = 'application/json')
         
-        self.assertEqual(response.status_code, 401)
-        self.assertEqual(response.json(), {'message' : 'INVALID_INPUT'})
-        
-    def test_signin_fail_invalid_keys(self):
-        account = {
-            'email'    : 'user1@naver.com',
-            'passwords' : '1q2w3e4r5t@'
-        }
-        response = client.post('/account/signin', json.dumps(account), content_type = 'application/json')
-        
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json(), {'message' : 'INVALID_KEYS'})        
+    #     self.assertEqual(response.status_code, 400)
+    #     self.assertEqual(response.json(), {'message' : 'INVALID_KEYS'})
