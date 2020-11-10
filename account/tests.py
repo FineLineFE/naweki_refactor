@@ -5,6 +5,9 @@ from django.test              import TestCase, Client
 from naweki_refactor.settings import SECRET_KEY, ALGORITHM
 from .models                  import Account
 
+from utils                    import login_decorator
+from unittest.mock            import patch, MagicMock
+
 client = Client()
 
 class SignUpTest(TestCase):
@@ -109,4 +112,4 @@ class SignInTest(TestCase):
         response = client.post('/account/signin', json.dumps(account), content_type = 'application/json')
         
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json(), {'message' : 'INVALID_KEYS'})        
+        self.assertEqual(response.json(), {'message' : 'INVALID_KEYS'})
