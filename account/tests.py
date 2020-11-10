@@ -103,7 +103,7 @@ class SignInTest(TestCase):
         
     def test_signin_fail_invalid_keys(self):
         account = {
-            'email'    : 'user1@naver.com',
+            'email'     : 'user1@naver.com',
             'passwords' : '1q2w3e4r5t@'
         }
         response = client.post('/account/signin', json.dumps(account), content_type = 'application/json')
