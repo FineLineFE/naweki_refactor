@@ -19,7 +19,7 @@ class CartTest(TestCase):
             name         = 'user1',
             phone_number = '01077778888'
         )
-        
+
         Size.objects.create(
             id   = 1,
             name = 'sizeFirst'
@@ -45,25 +45,24 @@ class CartTest(TestCase):
             category_id         = 1,
             type_id             = 1, 
         )
+        
         Product.objects.create(
-            id                  = 2,
+            id                  = 10,
             name                = "test1product",
             price               = 10000,
             main_img_url        = "http://nike.jpg",
-            description_title   = "테스트 타이틀2",
-            description_content = "테스트 컨텐트2",
+            description_title   = "테스트 타이틀1",
+            description_content = "테스트 컨텐트1",
             category_id         = 1,
             type_id             = 1, 
         )
-        Product.objects.create(
-            id                  = 3,
-            name                = "test1product",
-            price               = 10000,
-            main_img_url        = "http://nike.jpg",
-            description_title   = "테스트 타이틀3",
-            description_content = "테스트 컨텐트3",
-            category_id         = 1,
-            type_id             = 1, 
+        
+        Cart.objects.create(
+           id         = 1,
+           count      = 1,
+           account_id = 1,
+           size_id    = 1,
+           product_id = 1
         )
         self.token = jwt.encode({'id' : 1}, SECRET_KEY, algorithm = ALGORITHM).decode('utf-8')    
 
@@ -73,38 +72,24 @@ class CartTest(TestCase):
         Category.objects.all().delete()
         Type.objects.all().delete()
         Product.objects.all().delete()
-        
-     
+             
     def test_cart_post_success(self):
-        
         client = Client()
-        
         headers = {'HTTP_Authorization' : self.token}
         
         data = {
             'count'      : 10, 
             'account_id' : 1,
-            'product_id' : 2,
+            'product_id' : 10,
             'size_id'    : 1
         }
         response = client.post('/cart', json.dumps(data), **headers, content_type = 'application/json')  
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {'message' : 'CREATE_SUCCESS'})
-       
-             
+                    
     def test_cart_post_exist_cart(self):
-        
         client = Client()
-                
         headers = {'HTTP_Authorization' : self.token}
-        
-        Cart.objects.create(
-           id         = 1,
-           count      = 1,
-           account_id = 1,
-           size_id    = 1,
-           product_id = 1
-        )
         
         data = {
             'count'      : 100, 
@@ -115,54 +100,40 @@ class CartTest(TestCase):
         response = client.post('/cart', json.dumps(data), **headers, content_type = 'application/json')  
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json(), {'message' : 'INVALID_REQUEST'})  
-    
         
     def test_cart_post_key_error(self):
-        
         client = Client()
-        
         headers = {'HTTP_Authorization' : self.token}
         
         data = {
-            'countt'     : 1, 
+            'count'     : 1, 
             'account_id' : 1,
-            'product_id' : 1,
+            'productt_id' : 1,
             'size_id'    : 1,
         }
         response = client.post('/cart', json.dumps(data), **headers, content_type = 'application/jsons') 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json(), {'message' : 'INVALID_KEYS'})
-        
-    
+  
     def test_cart_get_success(self):
-        
         client = Client()
-        
         headers = {'HTTP_Authorization' : self.token, 'content_type' : 'application/json'}
+        response = client.get('/cart', **headers)
 
-        response = client.get('/cart', **headers)  
-        self.assertEqual(response.json(),
-            {
-                'cart_list' : [
-                    {
-                        'cartId'       : 1,
-                        'product_id'   : 1,
-                        'sizeId'       : 1,
-                        'name'         : "test1product",
-                        'price'        : 10000,
-                        'productImage' : "http://nike.jpg",
-                        'count'        : 1
-                    }
-                ]
-            }
-        )        
+        self.assertEqual(response.json(),{
+            'cart_list' :[{
+                'cartId' : 1,
+                'productId'   : 1,
+                'sizeId'       : 1,
+                'name'         : "test1product",
+                'price'        : 10000,
+                'productImage' : "http://nike.jpg",
+                'count'        : 1
+            }]})        
         self.assertEqual(response.status_code, 200)
         
-        
-    def test_cart_patch_not_exist(self):
-        
-        client = Client()
-        
+    def test_cart_patch_not_exist(self):  
+        client = Client() 
         headers = {'HTTP_Authorization' : self.token}
         
         data = {
@@ -172,21 +143,10 @@ class CartTest(TestCase):
         response = client.patch('/cart', json.dumps(data), **headers, content_type = 'application/json')
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json(), {'message' : 'CART_NOT_EXISTS'})
-        
-        
+         
     def test_cart_patch_update_success(self):
-        
         client = Client() 
-        
         headers = {'HTTP_Authorization' : self.token}
-        
-        Cart.objects.create(
-           id         = 1,
-           count      = 1,
-           account_id = 1,
-           size_id    = 1,
-           product_id = 1
-        )
         
         data = {
             'cart_id': 1,
@@ -196,11 +156,8 @@ class CartTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {'message' : 'UPDATE_SUCCESS'})      
     
-    
     def test_cart_patch_update_key_error(self):
-        
-        client = Client() 
-        
+        client = Client()       
         headers = {'HTTP_Authorization' : self.token}
         
         data = {
@@ -209,22 +166,11 @@ class CartTest(TestCase):
         } 
         response = client.patch('/cart', json.dumps(data), **headers, content_type = 'application/json')
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json(), {'message' : 'CART_NOT_EXISTS'})      
-
+        self.assertEqual(response.json(), {'message' : 'INVALID_KEYS'})      
 
     def test_cart_delete_success(self):
-        
         client = Client() 
-        
         headers = {'HTTP_Authorization' : self.token}
-        
-        Cart.objects.create(
-           id         = 1,
-           count      = 1,
-           account_id = 1,
-           size_id    = 1,
-           product_id = 1
-        )
         
         data = {
             'cart_id': 1,
@@ -233,20 +179,9 @@ class CartTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {'message' : 'DELETE_SUCCESS'})  
         
-
     def test_cart_delete_not_exist_cart(self):
-        
         client = Client() 
-        
         headers = {'HTTP_Authorization' : self.token}
-        
-        Cart.objects.create(
-           id         = 2,
-           count      = 1,
-           account_id = 1,
-           size_id    = 1,
-           product_id = 1
-        )
         
         data = {
             'cart_id': 100,
