@@ -29,18 +29,22 @@ class CartView(View):
         
     @login_decorator
     def get(self,request):
-        cart_list = Cart.objects.filter(account_id = request.account).select_related('product', 'size')       
-        cart_data = [{
-            "cartId"       : data.id,
-            "productId"    : data.product.id,
-            "sizeId"       : data.size.id,
-            "name"         : data.product.name,
-            "price"        : int(data.product.price),
-            "productImage" : data.product.main_img_url,
-            "count"        : int(data.count)
-            
-        } for data in cart_list]
-        return JsonResponse({"cart_list" : cart_data}, status = 200)
+        try:
+            cart_list = Cart.objects.filter(account_id = request.account).select_related('product', 'size')       
+            cart_data = [{
+                "cartId"       : data.id,
+                "productId"    : data.product.id,
+                "sizeId"       : data.size.id,
+                "name"         : data.product.name,
+                "price"        : int(data.product.price),
+                "productImage" : data.product.main_img_url,
+                "count"        : int(data.count)
+                
+            } for data in cart_list]
+            return JsonResponse({"cart_list" : cart_data}, status = 200)
+        
+        except KeyError:
+            return JsonResponse({"message" : "KEY_ERROR"}, status = 400)
     
     @login_decorator
     def patch(self,request):
@@ -66,6 +70,7 @@ class CartView(View):
             if Cart.objects.filter(id = data['cart_id']).exists():
                 Cart.objects.filter(id = data['cart_id']).delete()
                 return JsonResponse({"message" : "DELETE_SUCCESS"} , status = 200)
-    
-        except Cart.DoesNotExist:
+
             return JsonResponse({"message" : "NOT_EXIST_CART"}, status = 404)
+        except KeyError:
+            return JsonResponse({"message": "DOES NOT EXIST"}, status = 400)
