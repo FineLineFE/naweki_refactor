@@ -1,4 +1,4 @@
-# naweki 3rd_project refactoring
+# naweki 3rd_project 
 
 ### 🗒 프로젝트 기간 
 
